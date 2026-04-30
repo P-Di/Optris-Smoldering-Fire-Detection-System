@@ -1,0 +1,85 @@
+2026-04-30 10:50:28,815  INFO      otc_monitor.main  USB scanning disabled (use_usb=false)
+2026-04-30 10:50:28,815  INFO      otc_monitor.main  Ethernet detector added for subnet 192.168.0.0/24
+2026-04-30 10:50:32,819  WARNING   otc_monitor.main  No cameras found after enumeration wait
+2026-04-30 10:51:01,607  INFO      otc_monitor.main  USB scanning disabled (use_usb=false)
+2026-04-30 10:51:01,607  INFO      otc_monitor.main  Ethernet detector added for subnet 192.168.0.0/24
+2026-04-30 10:51:01,607  INFO      otc_monitor.main  Detected camera S/N 26034072 via usb
+2026-04-30 10:51:06,509  INFO      otc_monitor.main  Started worker for Camera 1 (S/N 26034072)
+2026-04-30 10:52:25,457  INFO      otc_monitor.main  USB scanning disabled (use_usb=false)
+2026-04-30 10:52:25,465  INFO      otc_monitor.main  Ethernet detector added for subnet 192.168.0.0/24
+2026-04-30 10:52:25,465  INFO      otc_monitor.main  Detected camera S/N 26034072 via usb
+2026-04-30 10:52:25,469  INFO      otc_monitor.main  Detected camera S/N 26034195 via usb
+2026-04-30 10:52:30,364  INFO      otc_monitor.main  Started worker for Camera 1 (S/N 26034072)
+2026-04-30 10:52:31,330  INFO      otc_monitor.main  Started worker for Camera 2 (S/N 26034195)
+2026-04-30 11:28:16,594  INFO      otc_monitor.main  USB scanning disabled (use_usb=false)
+2026-04-30 11:28:16,594  INFO      otc_monitor.main  Ethernet detector added for subnet 192.168.0.0/24
+2026-04-30 11:28:16,594  INFO      otc_monitor.main  Detected camera S/N 26034072 via usb
+2026-04-30 11:28:16,594  INFO      otc_monitor.main  Detected camera S/N 26034195 via usb
+2026-04-30 11:28:21,548  INFO      otc_monitor.main  Started worker for Camera 1 (S/N 26034072)
+2026-04-30 11:28:22,380  INFO      otc_monitor.main  Started worker for Camera 2 (S/N 26034195)
+2026-04-30 11:28:50,571  INFO      otc_monitor.emailer  Alert sent to dimarzio@cua.edu: Camera 2 / alarm
+2026-04-30 11:28:51,230  INFO      otc_monitor.emailer  Alert sent to 3015807491@vtext.com: Camera 2 / alarm
+2026-04-30 11:28:52,230  INFO      otc_monitor.emailer  Alert sent to 9195548887@tmomail.net: Camera 2 / alarm
+2026-04-30 11:30:37,449  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (105,135): 32.5°C (+2.5°C above baseline 30.0°C)
+2026-04-30 11:30:42,101  INFO      otc_monitor.emailer  Alert sent to dimarzio@cua.edu: Camera 2 / alarm
+2026-04-30 11:30:43,062  INFO      otc_monitor.emailer  Alert sent to 3015807491@vtext.com: Camera 2 / alarm
+2026-04-30 11:30:43,759  INFO      otc_monitor.emailer  Alert sent to 9195548887@tmomail.net: Camera 2 / alarm
+2026-04-30 11:30:46,427  INFO      otc_monitor.emailer  Alert sent to dimarzio@cua.edu: Camera 2 / alarm
+2026-04-30 11:30:47,355  INFO      otc_monitor.emailer  Alert sent to 3015807491@vtext.com: Camera 2 / alarm
+2026-04-30 11:30:48,153  INFO      otc_monitor.emailer  Alert sent to 9195548887@tmomail.net: Camera 2 / alarm
+2026-04-30 11:30:54,976  INFO      otc_monitor.emailer  Alert sent to dimarzio@cua.edu: Camera 2 / alarm
+2026-04-30 11:30:56,628  INFO      otc_monitor.emailer  Alert sent to 3015807491@vtext.com: Camera 2 / alarm
+2026-04-30 11:30:57,255  INFO      otc_monitor.emailer  Alert sent to 9195548887@tmomail.net: Camera 2 / alarm
+2026-04-30 11:31:04,344  INFO      otc_monitor.emailer  Alert sent to dimarzio@cua.edu: Camera 2 / alarm
+2026-04-30 11:31:05,296  INFO      otc_monitor.emailer  Alert sent to 3015807491@vtext.com: Camera 2 / alarm
+2026-04-30 11:31:06,245  INFO      otc_monitor.emailer  Alert sent to 9195548887@tmomail.net: Camera 2 / alarm
+2026-04-30 11:31:54,553  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (257,204): 31.6°C (+1.6°C above baseline 30.0°C)
+2026-04-30 11:32:09,401  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (249,120): 32.1°C (+2.1°C above baseline 30.0°C)
+2026-04-30 11:33:36,259  INFO      otc_monitor.emailer  Alert sent to dimarzio@cua.edu: Camera 2 / alarm
+2026-04-30 11:33:36,851  INFO      otc_monitor.emailer  Alert sent to 3015807491@vtext.com: Camera 2 / alarm
+2026-04-30 11:33:37,480  INFO      otc_monitor.emailer  Alert sent to 9195548887@tmomail.net: Camera 2 / alarm
+2026-04-30 11:33:39,956  INFO      otc_monitor.emailer  Alert sent to dimarzio@cua.edu: Camera 2 / alarm
+2026-04-30 11:33:40,627  INFO      otc_monitor.emailer  Alert sent to 3015807491@vtext.com: Camera 2 / alarm
+2026-04-30 11:33:41,250  INFO      otc_monitor.emailer  Alert sent to 9195548887@tmomail.net: Camera 2 / alarm
+2026-04-30 11:36:16,488  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (44,63): 32.5°C (+2.5°C above baseline 30.0°C)
+2026-04-30 11:39:18,039  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (15,195): 31.9°C (+1.9°C above baseline 30.0°C)
+2026-04-30 11:39:18,086  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (17,192): 32.1°C (+2.1°C above baseline 30.0°C)
+2026-04-30 11:39:18,118  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (18,188): 32.2°C (+2.2°C above baseline 30.0°C)
+2026-04-30 11:39:19,675  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (21,185): 32.6°C (+2.6°C above baseline 30.0°C)
+2026-04-30 11:39:19,787  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (23,182): 32.6°C (+2.6°C above baseline 30.0°C)
+2026-04-30 11:39:27,044  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (21,188): 32.6°C (+2.6°C above baseline 30.0°C)
+2026-04-30 11:40:28,778  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (25,178): 32.5°C (+2.5°C above baseline 30.0°C)
+2026-04-30 11:40:34,662  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (24,185): 32.5°C (+2.5°C above baseline 30.0°C)
+2026-04-30 11:40:48,891  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (21,191): 32.4°C (+2.4°C above baseline 30.0°C)
+2026-04-30 11:43:09,036  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (26,182): 32.7°C (+2.7°C above baseline 30.0°C)
+2026-04-30 11:44:34,824  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (133,38): 32.8°C (+2.8°C above baseline 30.0°C)
+2026-04-30 11:47:15,801  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (24,189): 32.7°C (+2.7°C above baseline 30.0°C)
+2026-04-30 11:50:36,576  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (239,333): 32.8°C (+2.8°C above baseline 30.0°C)
+2026-04-30 11:53:01,010  INFO      otc_monitor.camera_worker  Camera Camera 1: WARNING pixel (28,179): 32.7°C (+2.7°C above baseline 30.0°C)
+2026-04-30 11:54:28,727  INFO      otc_monitor.emailer  Alert sent to dimarzio@cua.edu: Camera 1 / alarm
+2026-04-30 11:54:29,324  INFO      otc_monitor.emailer  Alert sent to 3015807491@vtext.com: Camera 1 / alarm
+2026-04-30 11:54:29,992  INFO      otc_monitor.emailer  Alert sent to 9195548887@tmomail.net: Camera 1 / alarm
+2026-04-30 11:54:58,405  INFO      otc_monitor.emailer  Alert sent to dimarzio@cua.edu: Camera 1 / alarm
+2026-04-30 11:54:59,080  INFO      otc_monitor.emailer  Alert sent to 3015807491@vtext.com: Camera 1 / alarm
+2026-04-30 11:54:59,781  INFO      otc_monitor.emailer  Alert sent to 9195548887@tmomail.net: Camera 1 / alarm
+2026-04-30 11:55:13,749  INFO      otc_monitor.emailer  Alert sent to dimarzio@cua.edu: Camera 1 / alarm
+2026-04-30 11:55:14,517  INFO      otc_monitor.emailer  Alert sent to 3015807491@vtext.com: Camera 1 / alarm
+2026-04-30 11:55:15,109  INFO      otc_monitor.emailer  Alert sent to 9195548887@tmomail.net: Camera 1 / alarm
+2026-04-30 14:00:01,004  INFO      otc_monitor.main  USB scanning disabled (use_usb=false)
+2026-04-30 14:00:01,004  INFO      otc_monitor.main  Ethernet detector added for subnet 192.168.0.0/24
+2026-04-30 14:00:05,008  WARNING   otc_monitor.main  No cameras found after enumeration wait
+2026-04-30 14:00:36,635  INFO      otc_monitor.main  USB scanning disabled (use_usb=false)
+2026-04-30 14:00:36,635  INFO      otc_monitor.main  Ethernet detector added for subnet 192.168.0.0/24
+2026-04-30 14:00:40,640  WARNING   otc_monitor.main  No cameras found after enumeration wait
+2026-04-30 14:05:58,066  INFO      otc_monitor.main  USB scanning disabled (use_usb=false)
+2026-04-30 14:05:58,070  INFO      otc_monitor.main  Ethernet detector added for subnet 192.168.0.0/24
+2026-04-30 14:06:02,073  WARNING   otc_monitor.main  No cameras found after enumeration wait
+2026-04-30 14:06:05,642  INFO      otc_monitor.main  USB scanning disabled (use_usb=false)
+2026-04-30 14:06:05,642  INFO      otc_monitor.main  Ethernet detector added for subnet 192.168.0.0/24
+2026-04-30 14:06:09,649  WARNING   otc_monitor.main  No cameras found after enumeration wait
+2026-04-30 14:20:28,235  INFO      otc_monitor.main  USB scanning disabled (use_usb=false)
+2026-04-30 14:20:28,241  INFO      otc_monitor.main  Ethernet detector added for subnet 192.168.0.0/24
+2026-04-30 14:20:30,702  INFO      otc_monitor.main  USB scanning disabled (use_usb=false)
+2026-04-30 14:20:30,704  INFO      otc_monitor.main  Ethernet detector added for subnet 192.168.0.0/24
+2026-04-30 14:20:32,249  WARNING   otc_monitor.main  No cameras found after enumeration wait
+2026-04-30 14:20:34,700  WARNING   otc_monitor.main  No cameras found after enumeration wait

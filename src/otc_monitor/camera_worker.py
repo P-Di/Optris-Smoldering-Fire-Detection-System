@@ -1,6 +1,7 @@
 """Per-camera SDK worker: bridges IRImagerClient callbacks to Qt signals."""
 from __future__ import annotations
 
+import io
 import logging
 import threading
 import time
@@ -80,12 +81,13 @@ class CameraClient(otc.IRImagerClient):
         self._analyzer = AbsoluteThresholdFrameAnalyzer(fire_cfg)
         self._send_warning = cam_config.send_pre_alarm
 
-        # Pre-allocate temperature buffer (resized on first frame)
+        # Pre-allocate buffers (resized on first frame or resolution change)
         self._temp_buf: np.ndarray | None = None
+        self._image_buf: np.ndarray | None = None
 
         # GUI frame-rate limiter: emit frame_ready at most this often (seconds).
         # Algorithm runs every frame regardless.
-        self._gui_interval: float = 0.5   # ~2 Hz display update
+        self._gui_interval: float = 1 / 9  # ~9 Hz display update (match camera rate)
         self._last_gui_emit: float = 0.0
 
         # Reconnection state
@@ -130,32 +132,48 @@ class CameraClient(otc.IRImagerClient):
         # Run fire algorithm
         now = time.monotonic()
         alerts = self._analyzer.process(temp_frame, now)
+        alerts_to_send = []
         for alert in alerts:
             if alert.level == AlertLevel.AMBIENT_HIGH:
                 LOG.info("Camera %s: %s", self._name, alert.message)
-                continue  # ambient alerts are logged only unless send_ambient_alerts=True
+                continue
             if alert.level == AlertLevel.WARNING and not self._send_warning:
                 LOG.info("Camera %s: %s", self._name, alert.message)
-                continue  # warning suppressed (send_pre_alarm=false)
-            self._dispatch_fire_alert(alert)
+                continue
+            alerts_to_send.append(alert)
 
         # Emit GUI alarm state whenever anything changes
         candidate_count = self._analyzer.active_tracker_count
         worst = _worst_level(self._analyzer.active_trackers)
         self._signals.alarm_changed.emit(self._name, worst, max_temp, candidate_count)
 
-        # False-color display image — throttled to _gui_interval to keep Qt
-        # main thread responsive with many cameras.  Algorithm runs every frame.
-        if now - self._last_gui_emit >= self._gui_interval:
-            self._last_gui_emit = now
+        # Build palette image if GUI interval elapsed OR an alert needs a snapshot.
+        # Builds at most once per frame so the SDK converter isn't called twice.
+        needs_image = (now - self._last_gui_emit >= self._gui_interval) or bool(alerts_to_send)
+        if needs_image:
             self._builder.setThermalFrame(thermal)
             self._builder.convertTemperatureToPaletteImage()
             img_h = self._builder.getHeight()
             img_w = self._builder.getWidth()
-            image = np.empty((img_h, img_w, 3), dtype=np.uint8)
-            self._builder.copyImageDataTo(image)
-            flag_str = otc.flagStateToString(flag)
-            self._signals.frame_ready.emit(image, max_temp, flag_str)
+            if self._image_buf is None or self._image_buf.shape != (img_h, img_w, 3):
+                self._image_buf = np.empty((img_h, img_w, 3), dtype=np.uint8)
+            self._builder.copyImageDataTo(self._image_buf)
+            image = self._image_buf
+
+            if now - self._last_gui_emit >= self._gui_interval:
+                self._last_gui_emit = now
+                flag_str = otc.flagStateToString(flag)
+                # Copy before emitting: Qt queues cross-thread signals, so the GUI
+                # thread may still be reading this buffer when the next frame writes to it.
+                self._signals.frame_ready.emit(image.copy(), max_temp, flag_str)
+
+            if alerts_to_send:
+                snapshot_png = _bgr_to_png(image)
+                for alert in alerts_to_send:
+                    self._dispatch_fire_alert(alert, snapshot_png)
+        elif alerts_to_send:
+            for alert in alerts_to_send:
+                self._dispatch_fire_alert(alert, None)
 
     def onFlagStateChange(self, flagState) -> None:
         with self._flag_lock:
@@ -228,12 +246,20 @@ class CameraClient(otc.IRImagerClient):
 
     # ── internal ──────────────────────────────────────────────────────────────
 
-    def _dispatch_fire_alert(self, alert: FireAlert) -> None:
+    def _dispatch_fire_alert(self, alert: FireAlert, snapshot_png: bytes | None) -> None:
         self._alerter.send_fire_alert(
             alert=alert,
             camera_name=self._name,
             serial_number=self._serial,
+            snapshot_png=snapshot_png,
         )
+
+
+def _bgr_to_png(bgr: np.ndarray) -> bytes:
+    from PIL import Image  # lazy import — avoids DLL conflict with Optris SDK at startup
+    buf = io.BytesIO()
+    Image.fromarray(bgr[:, :, ::-1]).save(buf, format="PNG")
+    return buf.getvalue()
 
 
 def _worst_level(trackers: list[tuple[int, int, str]]) -> str:

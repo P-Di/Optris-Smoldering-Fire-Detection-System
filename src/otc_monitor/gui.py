@@ -9,9 +9,11 @@ from PyQt5.QtWidgets import (
     QGridLayout,
     QLabel,
     QMainWindow,
+    QPushButton,
     QScrollArea,
     QSizePolicy,
     QStatusBar,
+    QToolBar,
     QVBoxLayout,
     QWidget,
 )
@@ -131,11 +133,32 @@ _COLS = 3   # cameras per row — change to 4 for very wide monitors
 
 
 class MainWindow(QMainWindow):
-    def __init__(self) -> None:
+    def __init__(self, config_path: str = "config/monitor.json") -> None:
         super().__init__()
+        self._config_path = config_path
         self.setWindowTitle("Optris Thermal Monitor")
         self.setMinimumSize(820, 600)
         self.setStyleSheet("QMainWindow { background: #141414; } QStatusBar { color: #888; }")
+
+        # Settings button in toolbar
+        toolbar = QToolBar()
+        toolbar.setMovable(False)
+        toolbar.setStyleSheet(
+            "QToolBar { background: #141414; border: none; padding: 2px 6px; spacing: 0; }"
+        )
+        spacer = QWidget()
+        spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        toolbar.addWidget(spacer)
+        settings_btn = QPushButton("⚙  Settings")
+        settings_btn.setFixedHeight(26)
+        settings_btn.setStyleSheet(
+            "QPushButton { background: #2a2a2a; color: #bbb; border: 1px solid #444;"
+            " border-radius: 4px; font-size: 11px; padding: 0 10px; }"
+            "QPushButton:hover { background: #383838; color: #fff; }"
+        )
+        settings_btn.clicked.connect(self._open_settings)
+        toolbar.addWidget(settings_btn)
+        self.addToolBar(toolbar)
 
         # Scroll area so all cameras are reachable without resizing the window
         self._scroll = QScrollArea()
@@ -171,3 +194,8 @@ class MainWindow(QMainWindow):
         msg.setStyleSheet("font-size: 16px; color: #666;")
         self._grid.addWidget(msg, 0, 0)
         self.statusBar().showMessage("No cameras found.")
+
+    def _open_settings(self) -> None:
+        from .settings_dialog import SettingsDialog
+        dlg = SettingsDialog(self._config_path, parent=self)
+        dlg.exec_()

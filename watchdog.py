@@ -15,6 +15,7 @@ import logging
 import subprocess
 import sys
 import time
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 RESTART_DELAY_S   = 5     # seconds to wait before restarting after a crash
@@ -26,7 +27,10 @@ logging.basicConfig(
     format="%(asctime)s  %(levelname)-8s  watchdog  %(message)s",
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler(Path(__file__).parent / "watchdog.log", encoding="utf-8"),
+        RotatingFileHandler(
+            Path(__file__).parent / "watchdog.log",
+            maxBytes=2 * 1024 * 1024, backupCount=3, encoding="utf-8"
+        ),
     ],
 )
 LOG = logging.getLogger("watchdog")

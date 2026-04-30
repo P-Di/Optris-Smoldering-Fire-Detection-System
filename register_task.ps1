@@ -35,7 +35,7 @@ $task = New-ScheduledTask `
     -Trigger $trigger `
     -Settings $settings `
     -Principal $principal `
-    -Description "Optris Thermal Monitor — restarts automatically on crash"
+    -Description "Optris Thermal Monitor - restarts automatically on crash"
 
 Register-ScheduledTask -TaskName $TaskName -InputObject $task -Force
 

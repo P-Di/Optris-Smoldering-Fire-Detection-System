@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import sys
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 import optris.otcsdk as otc
@@ -18,9 +19,16 @@ LOG = logging.getLogger(__name__)
 
 
 def run(config_path: str = "config/monitor.json") -> None:
+    log_file = Path(config_path).resolve().parent.parent / "monitor.log"
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s  %(levelname)-8s  %(name)s  %(message)s",
+        handlers=[
+            logging.StreamHandler(sys.stdout),
+            RotatingFileHandler(
+                log_file, maxBytes=5 * 1024 * 1024, backupCount=5, encoding="utf-8"
+            ),
+        ],
     )
 
     config = load_config(config_path)
@@ -29,7 +37,7 @@ def run(config_path: str = "config/monitor.json") -> None:
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
 
-    window = MainWindow()
+    window = MainWindow(config_path)
     window.show()
 
     # Init SDK — Sdk.init() always adds a USB detector automatically.
