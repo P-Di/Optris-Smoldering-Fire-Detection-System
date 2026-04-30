@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ctypes
 import logging
+import os
 import time
 from ctypes import wintypes
 from dataclasses import dataclass
@@ -19,6 +20,22 @@ IPC_EVENT_FILE_CMD_READY = 1 << 3
 IPC_EVENT_AREAS_INIT = 1 << 11
 
 MEASURE_AREA_TYPE_MEASURE_AREA = 1
+
+# MeasureAreaShape enum values (from C# IPC2 sample — authoritative for the DLL)
+MAS_OFF = 0
+MAS_MP1X1 = 1
+MAS_MP3X3 = 2
+MAS_MP5X5 = 3
+MAS_USER_DEF_RECT = 4  # Full user-defined rectangle
+MAS_ELLIPSE = 5
+MAS_POLYGON = 6
+MAS_CURVE = 7
+
+# MeasureAreaMode enum values
+MAM_MIN = 0
+MAM_MAX = 1
+MAM_AVG = 2
+MAM_DIST = 3
 
 HRESULT = ctypes.c_long
 
@@ -49,12 +66,44 @@ class AlarmSetting(ctypes.Structure):
     ]
 
 
+# Layout matches C# IPC2 sample explicit field offsets (total 56 bytes):
+# Shape@0, Mode@4, BindToTempProfile@8, UseEmissivity@12, Emissivity@16,
+# ShowInDigDispGroup@20, distMin@24, distMax@28, Location@32, Size@40,
+# IsHotSpot@48, IsColdSpot@52
+class MeasureAreaData(ctypes.Structure):
+    _fields_ = [
+        ("Shape", ctypes.c_int),
+        ("Mode", ctypes.c_int),
+        ("BindToTempProfile", ctypes.c_uint),
+        ("UseEmissivity", ctypes.c_uint),
+        ("Emissivity", ctypes.c_float),
+        ("ShowInDigDispGroup", ctypes.c_uint),
+        ("distMin", ctypes.c_float),
+        ("distMax", ctypes.c_float),
+        ("Location", wintypes.POINT),
+        ("Size", wintypes.SIZE),
+        ("IsHotSpot", ctypes.c_uint),
+        ("IsColdSpot", ctypes.c_uint),
+    ]
+
+
 class OptrisSdk:
     def __init__(self, dll_path: Path):
         self.dll_path = Path(dll_path)
         if not self.dll_path.exists():
             raise OptrisSdkError(f"Connect SDK DLL not found: {self.dll_path}")
-        self._dll = ctypes.WinDLL(str(self.dll_path))
+        os.add_dll_directory(str(self.dll_path.parent))
+        try:
+            # winmode=0 uses the classic Windows search order so the DLL can
+            # find its own VC++ runtime dependencies (needed on Python 3.8+).
+            self._dll = ctypes.WinDLL(str(self.dll_path), winmode=0)
+        except OSError as exc:
+            raise OptrisSdkError(
+                f"Failed to load Connect SDK DLL ({self.dll_path}): {exc}\n"
+                "This usually means a Visual C++ redistributable is missing.\n"
+                "  v90  -> VC++ 2008  v100 -> VC++ 2010  v120 -> VC++ 2013\n"
+                "Try switching to the v100 build in your config's sdk_dll_path."
+            ) from exc
         self._bind()
 
     def _bind(self) -> None:
@@ -107,6 +156,37 @@ class OptrisSdk:
 
         self._dll.GetPathOfStoredFile.argtypes = [ctypes.c_ushort, ctypes.c_wchar_p, ctypes.c_int]
         self._dll.GetPathOfStoredFile.restype = HRESULT
+
+        self._dll.GetSourceResolutionIR.argtypes = [ctypes.c_ushort, ctypes.POINTER(wintypes.SIZE)]
+        self._dll.GetSourceResolutionIR.restype = HRESULT
+
+        self._dll.GetMeasureArea.argtypes = [
+            ctypes.c_ushort,
+            ctypes.c_ulong,
+            ctypes.POINTER(MeasureAreaData),
+        ]
+        self._dll.GetMeasureArea.restype = HRESULT
+
+        self._dll.SetMeasureArea.argtypes = [
+            ctypes.c_ushort,
+            ctypes.c_ulong,
+            ctypes.POINTER(MeasureAreaData),
+            ctypes.c_bool,
+        ]
+        self._dll.SetMeasureArea.restype = HRESULT
+
+        self._dll.SetMeasureAreaName.argtypes = [
+            ctypes.c_ushort,
+            ctypes.c_ulong,
+            ctypes.c_wchar_p,
+        ]
+        self._dll.SetMeasureAreaName.restype = HRESULT
+
+        self._dll.RemoveMeasureArea.argtypes = [ctypes.c_ushort, ctypes.c_ulong]
+        self._dll.RemoveMeasureArea.restype = HRESULT
+
+        self._dll.SetAlarmThreshold.argtypes = [ctypes.c_ushort, AlarmSetting]
+        self._dll.SetAlarmThreshold.restype = HRESULT
 
     def set_imager_count(self, count: int) -> None:
         self._check_hresult(self._dll.SetImagerIPCCount(count), "SetImagerIPCCount")
@@ -245,3 +325,98 @@ class OptrisSession:
         )
         value = buffer.value.strip()
         return Path(value) if value else None
+
+    def get_source_resolution_ir(self) -> tuple[int, int]:
+        size = wintypes.SIZE()
+        self.sdk._check_hresult(
+            self.sdk._dll.GetSourceResolutionIR(self.index, ctypes.byref(size)),
+            "GetSourceResolutionIR",
+        )
+        return int(size.cx), int(size.cy)
+
+    def get_measure_area(self, measure_area_index: int) -> MeasureAreaData:
+        data = MeasureAreaData()
+        self.sdk._check_hresult(
+            self.sdk._dll.GetMeasureArea(self.index, measure_area_index, ctypes.byref(data)),
+            "GetMeasureArea",
+        )
+        return data
+
+    def set_measure_area(self, area_index: int, data: MeasureAreaData, *, add_new: bool = False) -> None:
+        self.sdk._check_hresult(
+            self.sdk._dll.SetMeasureArea(self.index, area_index, ctypes.byref(data), add_new),
+            "SetMeasureArea",
+        )
+
+    def set_measure_area_name(self, area_index: int, name: str) -> None:
+        self.sdk._check_hresult(
+            self.sdk._dll.SetMeasureAreaName(self.index, area_index, name),
+            "SetMeasureAreaName",
+        )
+
+    def set_alarm_threshold(self, setting: AlarmSetting) -> None:
+        self.sdk._check_hresult(
+            self.sdk._dll.SetAlarmThreshold(self.index, setting),
+            "SetAlarmThreshold",
+        )
+
+    def ensure_fullscreen_alarm_area(self, name: str = "Full Screen Alarm") -> int:
+        """Create a max-mode rectangle covering the full camera frame if one doesn't exist.
+
+        Returns the index of the full-screen area (existing or newly created).
+        """
+        width, height = self.get_source_resolution_ir()
+        if width <= 0 or height <= 0:
+            raise OptrisSdkError(
+                f"Camera index {self.index}: GetSourceResolutionIR returned invalid size {width}x{height}"
+            )
+
+        count = self.get_measure_area_count()
+        for i in range(count):
+            try:
+                area = self.get_measure_area(i)
+                if (
+                    area.Shape == MAS_USER_DEF_RECT
+                    and area.Location.x == 0
+                    and area.Location.y == 0
+                    and area.Size.cx == width
+                    and area.Size.cy == height
+                ):
+                    LOG.debug(
+                        "Camera index %d: full-screen alarm area already exists at index %d.",
+                        self.index,
+                        i,
+                    )
+                    return i
+            except OptrisSdkError:
+                continue
+
+        # Build a new full-screen rectangle area using maximum-temperature mode
+        data = MeasureAreaData()
+        data.Shape = MAS_USER_DEF_RECT
+        data.Mode = MAM_MAX
+        data.BindToTempProfile = 0
+        data.UseEmissivity = 0
+        data.Emissivity = 1.0
+        data.ShowInDigDispGroup = 1
+        data.distMin = 0.0
+        data.distMax = 0.0
+        data.Location.x = 0
+        data.Location.y = 0
+        data.Size.cx = width
+        data.Size.cy = height
+        data.IsHotSpot = 0
+        data.IsColdSpot = 0
+
+        new_index = count  # SetMeasureArea with addNew=True appends at count
+        self.set_measure_area(new_index, data, add_new=True)
+        self.set_measure_area_name(new_index, name)
+        LOG.info(
+            "Camera index %d: created full-screen alarm area '%s' (%dx%d) at index %d.",
+            self.index,
+            name,
+            width,
+            height,
+            new_index,
+        )
+        return new_index

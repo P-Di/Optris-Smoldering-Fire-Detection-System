@@ -42,6 +42,10 @@ class RuntimeConfig:
     reconnect_backoff_seconds: float = 5.0
     log_level: str = "INFO"
     log_file: Path | None = None
+    # Startup configuration steps
+    auto_configure_pix_connect: bool = True   # pywinauto: enable Connect SDK in External Communication
+    ensure_fullscreen_alarm_area: bool = True  # SDK: create full-screen measure area if absent
+    fullscreen_area_name: str = "Full Screen Alarm"  # name for the auto-created area
 
 
 @dataclass(frozen=True)
@@ -148,6 +152,9 @@ def _parse_runtime(raw: dict[str, Any], base_dir: Path) -> RuntimeConfig:
         reconnect_backoff_seconds=float(raw.get("reconnect_backoff_seconds", 5.0)),
         log_level=str(raw.get("log_level", "INFO")).upper(),
         log_file=log_file,
+        auto_configure_pix_connect=bool(raw.get("auto_configure_pix_connect", True)),
+        ensure_fullscreen_alarm_area=bool(raw.get("ensure_fullscreen_alarm_area", True)),
+        fullscreen_area_name=str(raw.get("fullscreen_area_name", "Full Screen Alarm")),
     )
 
 

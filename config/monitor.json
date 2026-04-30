@@ -1,0 +1,50 @@
+{
+  "_comment": "Optris Thermal Monitor config. Edit fire_monitor thresholds to match your scene.",
+
+  "email": {
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 465,
+    "username": "dimarzio@cua.edu",
+    "password_env": "GMAIL_APP_PASSWORD",
+    "to_addresses": ["dimarzio@cua.edu",
+      "3015807491@vtext.com",
+      "9195548887@tmomail.net"],
+    "from_address": "dimarzio@cua.edu",
+    "subject_prefix": "Optris Alert",
+    "use_ssl": true
+  },
+
+  "runtime": {
+    "send_pre_alarm": false,
+    "enumeration_wait_seconds": 4.0,
+    "use_usb": false,
+    "ethernet_subnets": ["192.168.0.0/24"]
+  },
+
+  "default_camera": {
+    "name": "Camera {index}",
+    "send_pre_alarm": false,
+
+    "fire_monitor": {
+      "_comment_threshold": "Candidate created when any pixel exceeds absolute_threshold_c OR rises more than relative_threshold_c above the scene average.",
+      "absolute_threshold_c": 40,
+      "relative_threshold_c": 10,
+
+      "_comment_warning": "WARNING fires after hotspot stays >= threshold + warning_rise_c for warning_window_s seconds continuously.",
+      "warning_rise_c": 1.5,
+      "warning_window_s": 120,
+
+      "_comment_alarm": "ALARM fires after hotspot stays >= threshold + alarm_rise_c for alarm_window_s seconds continuously.",
+      "alarm_rise_c": 3.0,
+      "alarm_window_s": 300,
+
+      "drop_tolerance_c": 0.5,
+      "max_candidate_age_s": 3600,
+      "min_repeat_interval_s": 10,
+      "send_ambient_alerts": false
+    }
+  },
+
+  "cameras": [
+  ]
+}

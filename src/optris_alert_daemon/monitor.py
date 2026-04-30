@@ -20,6 +20,7 @@ from .optris_sdk import (
     OptrisSdkError,
     OptrisSession,
 )
+from .pix_connect_setup import configure_pix_connect_instance
 
 
 LOG = logging.getLogger("optris_alert_daemon")
@@ -116,6 +117,7 @@ class CameraRuntime:
     areas: list[AreaRuntime] = field(default_factory=list)
     connected: bool = False
     next_connect_attempt_at: float = 0.0
+    process: subprocess.Popen | None = None
 
 
 class MonitorService:
@@ -148,11 +150,16 @@ class MonitorService:
     def _initialize_cameras(self) -> None:
         assert self.sdk is not None
         for index, camera_config in enumerate(self.config.cameras):
+            proc: subprocess.Popen | None = None
             if camera_config.launch_command:
-                self._launch_pix_connect(camera_config)
+                proc = self._launch_pix_connect(camera_config)
+                if proc is not None and self.config.runtime.auto_configure_pix_connect:
+                    configure_pix_connect_instance(proc, camera_config.instance_name)
             session = self.sdk.create_session(index=index, instance_name=camera_config.instance_name)
-            camera = CameraRuntime(config=camera_config, session=session)
+            camera = CameraRuntime(config=camera_config, session=session, process=proc)
             self._connect_camera(camera, startup=True)
+            if camera.connected and self.config.runtime.ensure_fullscreen_alarm_area:
+                self._ensure_fullscreen_alarm_area(camera)
             self.cameras.append(camera)
 
     def _poll_once(self) -> None:
@@ -297,9 +304,27 @@ class MonitorService:
             event.temperature_c,
         )
 
-    def _launch_pix_connect(self, camera_config: CameraConfig) -> None:
+    def _ensure_fullscreen_alarm_area(self, camera: CameraRuntime) -> None:
+        try:
+            camera.session.ensure_fullscreen_alarm_area(
+                name=self.config.runtime.fullscreen_area_name
+            )
+            # Reload areas so the daemon picks up the new area if it matches a config entry
+            self._reload_camera_areas(camera)
+        except OptrisSdkError as exc:
+            LOG.warning(
+                "Camera %s: could not ensure full-screen alarm area: %s",
+                camera.config.name,
+                exc,
+            )
+
+    def _launch_pix_connect(self, camera_config: CameraConfig) -> subprocess.Popen | None:
         LOG.info("Launching PIX Connect for %s: %s", camera_config.name, camera_config.launch_command)
-        subprocess.Popen(camera_config.launch_command)
+        try:
+            return subprocess.Popen(camera_config.launch_command)
+        except OSError as exc:
+            LOG.error("Failed to launch PIX Connect for %s: %s", camera_config.name, exc)
+            return None
 
     def _setup_logging(self) -> None:
         level = getattr(logging, self.config.runtime.log_level.upper(), logging.INFO)
