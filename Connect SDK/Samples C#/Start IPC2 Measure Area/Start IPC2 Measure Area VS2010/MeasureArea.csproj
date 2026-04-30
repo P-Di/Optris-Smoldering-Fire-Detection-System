@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{627F905F-0D69-4808-8C91-BBA0CCE67275}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MeasureArea</RootNamespace>
+    <AssemblyName>MeasureArea</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\MeasureArea\classes\IPC2.cs">
+      <Link>classes\IPC2.cs</Link>
+    </Compile>
+    <Compile Include="..\MeasureArea\DTOs\MeasureAreaListVM.cs">
+      <Link>DTOs\MeasureAreaListVM.cs</Link>
+    </Compile>
+    <Compile Include="..\MeasureArea\DTOs\MeasureAreaVM.cs">
+      <Link>DTOs\MeasureAreaVM.cs</Link>
+    </Compile>
+    <Compile Include="..\MeasureArea\DTOs\POINT.cs">
+      <Link>DTOs\POINT.cs</Link>
+    </Compile>
+    <Compile Include="..\MeasureArea\DTOs\SIZE.cs">
+      <Link>DTOs\SIZE.cs</Link>
+    </Compile>
+    <Compile Include="..\MeasureArea\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\MeasureArea\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="..\MeasureArea\Properties\AssemblyInfo.cs" />
+    <Compile Include="..\MeasureArea\services\IPC2Service.cs">
+      <Link>services\IPC2Service.cs</Link>
+    </Compile>
+    <Compile Include="..\MeasureArea\UserControls\MeasureAreaControl.cs">
+      <SubType>UserControl</SubType>
+      <Link>UserControls\MeasureAreaControl.cs</Link>
+    </Compile>
+    <Compile Include="..\MeasureArea\UserControls\MeasureAreaControl.Designer.cs">
+      <DependentUpon>MeasureAreaControl.cs</DependentUpon>
+      <Link>UserControls\MeasureAreaControl.Designer.cs</Link>
+    </Compile>
+    <Compile Include="..\MeasureArea\UserControls\MeasureAreaDetailsControl.cs">
+      <SubType>UserControl</SubType>
+      <Link>UserControls\MeasureAreaDetailsControl.cs</Link>
+    </Compile>
+    <Compile Include="..\MeasureArea\UserControls\MeasureAreaDetailsControl.Designer.cs">
+      <DependentUpon>MeasureAreaDetailsControl.cs</DependentUpon>
+      <Link>UserControls\MeasureAreaDetailsControl.Designer.cs</Link>
+    </Compile>
+    <Compile Include="..\MeasureArea\UserControls\PolygonPointsControl.cs">
+      <SubType>UserControl</SubType>
+      <Link>UserControls\PolygonPointsControl.cs</Link>
+    </Compile>
+    <Compile Include="..\MeasureArea\UserControls\PolygonPointsControl.Designer.cs">
+      <DependentUpon>PolygonPointsControl.cs</DependentUpon>
+      <Link>UserControls\PolygonPointsControl.Designer.cs</Link>
+    </Compile>
+    <EmbeddedResource Include="..\MeasureArea\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\MeasureArea\Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="..\MeasureArea\Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="..\MeasureArea\UserControls\MeasureAreaControl.resx">
+      <DependentUpon>MeasureAreaControl.cs</DependentUpon>
+      <Link>UserControls\MeasureAreaControl.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\MeasureArea\UserControls\MeasureAreaDetailsControl.resx">
+      <DependentUpon>MeasureAreaDetailsControl.cs</DependentUpon>
+      <Link>UserControls\MeasureAreaDetailsControl.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\MeasureArea\UserControls\PolygonPointsControl.resx">
+      <DependentUpon>PolygonPointsControl.cs</DependentUpon>
+      <Link>UserControls\PolygonPointsControl.resx</Link>
+    </EmbeddedResource>
+    <None Include="..\MeasureArea\Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="..\MeasureArea\Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

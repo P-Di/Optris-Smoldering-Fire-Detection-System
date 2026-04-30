@@ -1,0 +1,80 @@
+{
+  "sdk_dll_path": "C:\\Program Files (x86)\\Optris GmbH\\PIX Connect\\SDK\\Connect SDK\\Lib\\v120\\ImagerIPC2x64.dll",
+  "email": {
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 465,
+    "username": "dimarzio@cua.edu",
+    "password_env": "GMAIL_APP_PASSWORD",
+    "from_address": "dimarzio@cua.edu",
+    "to_addresses": [
+      "dimarzio@cua.edu",
+      "3015807491@vtext.com",
+      "9195548887@tmomail.net"
+
+
+    ],
+    "subject_prefix": "Optris Alarm",
+    "use_ssl": true
+  },
+  "runtime": {
+    "poll_interval_seconds": 1.0,
+    "connect_timeout_seconds": 120.0,
+    "connect_retry_interval_seconds": 1.0,
+    "startup_grace_seconds": 5.0,
+    "consecutive_samples": 2,
+    "repeat_alert_interval_seconds": 1800.0,
+    "clear_alerts": true,
+    "snapshot_timeout_seconds": 10.0,
+    "reconnect_backoff_seconds": 5.0,
+    "log_level": "DEBUG",
+    "log_file": "logs\\optris-alert-daemon.log"
+  },
+  "cameras": [
+    {
+      "name": "Boiler East",
+      "instance_name": "Camera1",
+      "snapshot_dir": "C:\\Users\\paul\\OneDrive\\Documents\\Imager Data",
+      "launch_command": [
+        "C:\\Program Files (x86)\\Optris GmbH\\PIX Connect\\Imager.exe",
+        "/Name=Camera1"
+      ],
+      "measure_areas": [
+        {
+          "label": "Hot Spot",
+          "index": 0,
+          "direction": "high",
+          "threshold_source": "custom",
+          "thresholds": {
+            "high_alarm_c": 37.78
+          },
+          "send_pre_alarm": false,
+          "snapshot_on_alarm": true,
+          "attach_snapshot": true
+        }
+      ]
+    },
+    {
+      "name": "Boiler West",
+      "instance_name": "Camera2",
+      "snapshot_dir": "C:\\Users\\paul\\OneDrive\\Documents\\Imager Data",
+      "launch_command": [
+        "C:\\Program Files (x86)\\Optris GmbH\\PIX Connect\\Imager.exe",
+        "/Name=Camera2"
+      ],
+      "measure_areas": [
+        {
+          "label": "Hot Spot",
+          "index": 0,
+          "direction": "high",
+          "threshold_source": "custom",
+          "thresholds": {
+            "high_alarm_c": 37.78
+          },
+          "send_pre_alarm": false,
+          "snapshot_on_alarm": true,
+          "attach_snapshot": true
+        }
+      ]
+    }
+  ]
+}
